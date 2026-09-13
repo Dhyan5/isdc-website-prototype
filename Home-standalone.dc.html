@@ -146,7 +146,7 @@
         </div>
         <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;letter-spacing:0.5px;border-bottom:2px solid #000;padding-bottom:4px;">VIEW ALL PROJECTS →</a>
       </div>
-      <div style="display:grid;grid-template-columns:{{ projectPreviewCols }};gap:28px;">
+      <div style="display:grid;grid-template-columns:{{ projectPreviewCols }};gap:28px;align-items:start;">
         <sc-for list="{{ featuredProjects }}" as="p" hint-placeholder-count="3">
           <div data-reveal="1" data-reveal-idx="{{ $index }}" style="opacity:0;transform:translateY(28px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);">
             <dc-import name="ProjectCard" p="{{ p }}" hint-size="100%,420px" style="width:100%;"></dc-import>
@@ -165,7 +165,7 @@
         </div>
         <a href="Events.dc.html" style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;letter-spacing:0.5px;color:#fff;border-bottom:2px solid #FEBB00;padding-bottom:4px;">VIEW ALL EVENTS →</a>
       </div>
-      <div style="display:grid;grid-template-columns:{{ eventPreviewCols }};gap:24px;">
+      <div style="display:grid;grid-template-columns:{{ eventPreviewCols }};gap:24px;align-items:start;">
         <sc-for list="{{ upcomingEventsPreview }}" as="e" hint-placeholder-count="3">
           <div data-reveal="1" data-reveal-idx="{{ $index }}" style="opacity:0;transform:translateY(28px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);">
             <dc-import name="EventCard" e="{{ e }}" hint-size="100%,300px" style="width:100%;"></dc-import>
@@ -184,7 +184,7 @@
         </div>
         <a href="Team.dc.html" style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;letter-spacing:0.5px;border-bottom:2px solid #000;padding-bottom:4px;">MEET EVERYONE →</a>
       </div>
-      <div style="display:grid;grid-template-columns:{{ teamPreviewCols }};gap:16px;">
+      <div style="display:grid;grid-template-columns:{{ teamPreviewCols }};gap:16px;align-items:start;">
         <sc-for list="{{ teamPreview }}" as="m" hint-placeholder-count="4">
           <div data-reveal="1" data-reveal-idx="{{ $index }}" style="opacity:0;transform:translateY(28px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);">
             <dc-import name="TeamCard" m="{{ m }}" hint-size="100%,260px" style="width:100%;"></dc-import>

@@ -7,16 +7,16 @@
 </head>
 <body>
 <x-dc>
-<div ref="{{ cardRef }}" onMouseMove="{{ onMove }}" onMouseLeave="{{ onLeave }}" style="position:relative;border:1px solid rgba(0,0,0,0.15);background:#fff;transition:transform .25s,border-color .25s,box-shadow .25s;height:100%;display:flex;flex-direction:column;overflow:hidden;" style-hover="transform:translateY(-6px);border-color:#000;box-shadow:0 16px 32px rgba(0,0,0,0.12);">
+<div ref="{{ cardRef }}" onMouseMove="{{ onMove }}" onMouseLeave="{{ onLeave }}" style="position:relative;border:1px solid rgba(0,0,0,0.15);background:#fff;transition:transform .25s,border-color .25s,box-shadow .25s;display:flex;flex-direction:column;overflow:hidden;" style-hover="transform:translateY(-6px);border-color:#000;box-shadow:0 16px 32px rgba(0,0,0,0.12);">
   <div class="__spot" style="position:absolute;inset:0;opacity:0;transition:opacity .3s ease;pointer-events:none;z-index:1;background:radial-gradient(circle 180px at 50% 50%, rgba(254,187,0,0.14), transparent 70%);"></div>
   <div aria-label="Project image placeholder" style="width:100%;aspect-ratio:16/10;background:repeating-linear-gradient(135deg,#111 0px,#111 10px,#000 10px,#000 20px);display:flex;align-items:center;justify-content:center;position:relative;z-index:2;overflow:hidden;">
     <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:rgba(255,255,255,0.4);letter-spacing:1px;">PROJECT IMAGE</span>
   </div>
-  <div style="padding:26px;display:flex;flex-direction:column;flex:1;position:relative;z-index:2;">
+  <div style="padding:26px;display:flex;flex-direction:column;position:relative;z-index:2;">
     <div style="align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:1px;background:{{ statusBg }};color:{{ statusColor }};padding:5px 10px;margin-bottom:14px;text-transform:uppercase;">{{ p.status }}</div>
     <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;color:#FEBB00;margin-bottom:10px;">{{ p.category }} · {{ p.duration }}</div>
     <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:19px;line-height:1.25;margin-bottom:10px;">{{ p.name }}</div>
-    <div style="font-size:14px;line-height:1.6;color:rgba(0,0,0,0.62);margin-bottom:18px;flex:1;">{{ p.desc }}</div>
+    <div style="font-size:14px;line-height:1.6;color:rgba(0,0,0,0.62);margin-bottom:18px;">{{ p.desc }}</div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;">
       <sc-for list="{{ p.stack }}" as="t" hint-placeholder-count="3">
         <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;padding:5px 9px;border:1px solid rgba(0,0,0,0.18);color:rgba(0,0,0,0.6);">{{ t }}</span>

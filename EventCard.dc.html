@@ -7,7 +7,7 @@
 </head>
 <body>
 <x-dc>
-<div ref="{{ cardRef }}" onMouseMove="{{ onMove }}" onMouseLeave="{{ onLeave }}" style="position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.15);background:#000;color:#fff;padding:28px;height:100%;display:flex;flex-direction:column;transition:transform .25s,border-color .25s;" style-hover="transform:translateY(-6px);border-color:#FEBB00;">
+<div ref="{{ cardRef }}" onMouseMove="{{ onMove }}" onMouseLeave="{{ onLeave }}" style="position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.15);background:#000;color:#fff;padding:28px;display:flex;flex-direction:column;transition:transform .25s,border-color .25s;" style-hover="transform:translateY(-6px);border-color:#FEBB00;">
   <div class="__spot" style="position:absolute;inset:0;opacity:0;transition:opacity .3s ease;pointer-events:none;z-index:0;background:radial-gradient(circle 180px at 50% 50%, rgba(254,187,0,0.16), transparent 70%);"></div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;position:relative;z-index:2;">
     <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:1px;color:#FEBB00;">{{ e.category }}</span>
@@ -15,7 +15,7 @@
   </div>
   <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;line-height:1.25;margin-bottom:10px;position:relative;z-index:2;">{{ e.name }}</div>
   <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:14px;position:relative;z-index:2;">{{ e.date }}</div>
-  <div style="font-size:14px;line-height:1.6;color:rgba(255,255,255,0.65);margin-bottom:20px;flex:1;position:relative;z-index:2;">{{ e.desc }}</div>
+  <div style="font-size:14px;line-height:1.6;color:rgba(255,255,255,0.65);margin-bottom:20px;position:relative;z-index:2;">{{ e.desc }}</div>
   <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;position:relative;z-index:2;">
     <sc-for list="{{ e.tags }}" as="t" hint-placeholder-count="2">
       <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;padding:5px 9px;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.65);">{{ t }}</span>
