@@ -18,6 +18,7 @@
   a:hover{color:#FEBB00;}
   @keyframes isdc-fadeup{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
   ::selection{background:#FEBB00;color:#000;}
+  @media (max-width:859px){.isdc-form-fields{grid-template-columns:1fr!important;}}
 </style>
 </helmet>
 <div ref="{{ rootRef }}" style="font-family:'Inter',sans-serif;color:#000;background:#fff;overflow-x:hidden;animation:isdc-fadeup .5s ease both;">
@@ -43,7 +44,7 @@
         </sc-if>
         <sc-if value="{{ notSubmitted }}" hint-placeholder-val="{{ true }}">
           <form onSubmit="{{ submit }}" style="display:flex;flex-direction:column;gap:18px;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+            <div class="isdc-form-fields" style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
               <input value="{{ form.name }}" onChange="{{ setName }}" required="{{ true }}" placeholder="Full Name *" style="font-family:'Inter',sans-serif;font-size:15px;padding:15px 16px;border:1.5px solid rgba(0,0,0,0.25);background:#fff;outline:none;transition:border-color .2s;" style-focus="border-color:#FEBB00;" />
               <input value="{{ form.email }}" onChange="{{ setEmail }}" required="{{ true }}" type="email" placeholder="Email *" style="font-family:'Inter',sans-serif;font-size:15px;padding:15px 16px;border:1.5px solid rgba(0,0,0,0.25);background:#fff;outline:none;transition:border-color .2s;" style-focus="border-color:#FEBB00;" />
             </div>
