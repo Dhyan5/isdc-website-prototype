@@ -7,14 +7,16 @@
 </head>
 <body>
 <x-dc>
-<div ref="{{ cardRef }}" onMouseMove="{{ onMove }}" onMouseLeave="{{ onLeave }}" style="position:relative;overflow:hidden;background:#fff;border:1px solid rgba(0,0,0,0.12);padding:28px 22px;text-align:center;transition:background .25s,border-color .25s;" style-hover="background:#000;border-color:rgba(255,255,255,0.15);">
+<div ref="{{ cardRef }}" onMouseMove="{{ onMove }}" onMouseLeave="{{ onLeave }}" style="position:relative;overflow:hidden;background:#fff;border:1px solid rgba(0,0,0,0.12);text-align:left;transition:background .25s,border-color .25s;" style-hover="background:#000;border-color:rgba(255,255,255,0.15);">
   <div class="__spot" style="position:absolute;inset:0;opacity:0;transition:opacity .3s ease;pointer-events:none;z-index:0;background:radial-gradient(circle 160px at 50% 50%, rgba(254,187,0,0.14), transparent 70%);"></div>
-  <div style="width:76px;height:76px;border-radius:50%;margin:0 auto 18px;background:repeating-linear-gradient(135deg,rgba(0,0,0,0.1) 0px,rgba(0,0,0,0.1) 6px,rgba(0,0,0,0.04) 6px,rgba(0,0,0,0.04) 12px);display:flex;align-items:center;justify-content:center;position:relative;z-index:2;">
-    <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:rgba(0,0,0,0.4);">{{ initials }}</span>
+  <div aria-label="Team member image placeholder" style="width:100%;aspect-ratio:16/10;background:repeating-linear-gradient(135deg,#111 0px,#111 10px,#000 10px,#000 20px);display:flex;align-items:center;justify-content:center;position:relative;z-index:2;">
+    <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:42px;color:#FEBB00;">{{ initials }}</span>
   </div>
-  <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;margin-bottom:4px;position:relative;z-index:2;{{ nameColor }}">{{ m.name }}</div>
-  <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#FEBB00;margin-bottom:14px;position:relative;z-index:2;">{{ m.role }}</div>
-  <a href="{{ m.linkedin }}" target="_blank" style="position:relative;z-index:2;{{ linkStyle }}">LINKEDIN →</a>
+  <div style="padding:22px;position:relative;z-index:2;">
+    <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;margin-bottom:6px;{{ nameColor }}">{{ m.name }}</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#FEBB00;margin-bottom:16px;">{{ m.role }}</div>
+    <a href="{{ m.linkedin }}" target="_blank" style="{{ linkStyle }}">LINKEDIN →</a>
+  </div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:260,&quot;height&quot;:260}}">
