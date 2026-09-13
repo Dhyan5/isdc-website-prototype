@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#fff;-webkit-font-smoothing:antialiased;}
+  *{box-sizing:border-box;}
+  a{color:#000;text-decoration:none;}
+  a:hover{color:#FEBB00;}
+  @keyframes isdc-fadeup{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+  ::selection{background:#FEBB00;color:#000;}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="font-family:'Inter',sans-serif;color:#000;background:#fff;overflow-x:hidden;animation:isdc-fadeup .5s ease both;">
+  <dc-import name="Navbar" current="gallery" hint-size="100%,84px"></dc-import>
+  <dc-import name="PageHero" eyebrow="GALLERY" title="Moments from the community." sub="Explore highlights, workshops and events from across the ISDC calendar." hint-size="100%,340px"></dc-import>
+  <section style="background:#fff;padding:clamp(40px,6vw,70px) clamp(20px,4vw,48px) clamp(80px,10vw,130px);">
+    <div style="max-width:1360px;margin:0 auto;display:grid;grid-template-columns:{{ galleryGridCols }};gap:16px;grid-auto-flow:dense;">
+      <sc-for list="{{ galleryItems }}" as="g" hint-placeholder-count="12">
+        <div data-reveal="1" data-reveal-idx="{{ $index }}" style="{{ g.span }}opacity:0;transform:translateY(28px) scale(0.98);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden;cursor:pointer;aspect-ratio:{{ g.ratio }};">
+          <div style="position:absolute;inset:0;background:repeating-linear-gradient(135deg,#111 0px,#111 10px,#000 10px,#000 20px);transition:transform .4s;" style-hover="transform:scale(1.06);"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.85) 100%);opacity:0;transition:opacity .3s;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;" style-hover="opacity:1;">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:1px;color:#FEBB00;margin-bottom:4px;">{{ g.category }}</span>
+            <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:#fff;">{{ g.title }}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+  <dc-import name="Footer" hint-size="100%,420px"></dc-import>
+  <dc-import name="ChatBot" hint-size="64px,64px" style="position:fixed;bottom:24px;right:24px;z-index:999;"></dc-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+class Component extends DCLogic {
+  state = { data: null, w: (typeof window!=='undefined'?window.innerWidth:1440) };
+  componentDidMount() {
+    this._onResize = () => this.setState({ w: window.innerWidth });
+    window.addEventListener('resize', this._onResize);
+    import('./data.js').then((m) => { this._dataMod = m; this.setState({ data: m }, () => this._wireAnim()); });
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this._onResize); if (this._io) this._io.disconnect(); }
+  rootRef = (el) => { this._rootEl = el; this._wireAnim(); };
+  _wireAnim() {
+    if (!this._rootEl || !this._dataMod || this._wired) return;
+    this._wired = true;
+    requestAnimationFrame(() => { this._io = this._dataMod.setupReveal(this._rootEl); });
+  }
+  renderVals() {
+    const d = this.state.data;
+    const isMobile = this.state.w < 860;
+    const galleryItems = d ? d.galleryItems.map(g => ({...g, span: g.big ? 'grid-column:span 2;grid-row:span 2;' : ''})) : [];
+    return { rootRef: this.rootRef, galleryItems, galleryGridCols: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)' };
+  }
+}
+
+</script>
+</body>
+</html>

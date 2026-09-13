@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#fff;-webkit-font-smoothing:antialiased;}
+  *{box-sizing:border-box;}
+  a{color:#000;text-decoration:none;}
+  a:hover{color:#FEBB00;}
+  @keyframes isdc-fadeup{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+  ::selection{background:#FEBB00;color:#000;}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="font-family:'Inter',sans-serif;color:#000;background:#fff;overflow-x:hidden;animation:isdc-fadeup .5s ease both;">
+  <dc-import name="Navbar" current="contact" hint-size="100%,84px"></dc-import>
+  <dc-import name="PageHero" eyebrow="CONTACT US" title="Let's talk." sub="Have questions about ISDC? Want to collaborate on a project? We'd love to hear from you." hint-size="100%,300px"></dc-import>
+  <section style="background:#fff;padding:clamp(40px,6vw,70px) clamp(20px,4vw,48px) clamp(80px,10vw,130px);">
+    <div style="max-width:1360px;margin:0 auto;display:grid;grid-template-columns:{{ gridCols }};gap:clamp(40px,6vw,80px);">
+      <div>
+        <sc-for list="{{ contactInfo }}" as="c" hint-placeholder-count="4">
+          <div data-reveal="1" data-reveal-idx="{{ $index }}" style="opacity:0;transform:translateY(20px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);padding:22px 0;border-bottom:1px solid rgba(0,0,0,0.12);">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1.5px;color:#FEBB00;margin-bottom:6px;">{{ c.label }}</div>
+            <a href="{{ c.href }}" style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:19px;color:#000;">{{ c.value }}</a>
+            <div style="font-size:13.5px;color:rgba(0,0,0,0.5);margin-top:4px;">{{ c.sub }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div>
+        <sc-if value="{{ submitted }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#000;color:#fff;padding:48px;text-align:center;animation:isdc-fadeup .4s ease both;">
+            <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;margin-bottom:12px;">Message sent.</div>
+            <div style="font-size:14.5px;color:rgba(255,255,255,0.7);">We'll get back to you at {{ form.email }} soon.</div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ notSubmitted }}" hint-placeholder-val="{{ true }}">
+          <form onSubmit="{{ submit }}" style="display:flex;flex-direction:column;gap:18px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+              <input value="{{ form.name }}" onChange="{{ setName }}" required="{{ true }}" placeholder="Full Name *" style="font-family:'Inter',sans-serif;font-size:15px;padding:15px 16px;border:1.5px solid rgba(0,0,0,0.25);background:#fff;outline:none;transition:border-color .2s;" style-focus="border-color:#FEBB00;" />
+              <input value="{{ form.email }}" onChange="{{ setEmail }}" required="{{ true }}" type="email" placeholder="Email *" style="font-family:'Inter',sans-serif;font-size:15px;padding:15px 16px;border:1.5px solid rgba(0,0,0,0.25);background:#fff;outline:none;transition:border-color .2s;" style-focus="border-color:#FEBB00;" />
+            </div>
+            <input value="{{ form.subject }}" onChange="{{ setSubject }}" placeholder="Subject" style="font-family:'Inter',sans-serif;font-size:15px;padding:15px 16px;border:1.5px solid rgba(0,0,0,0.25);background:#fff;outline:none;transition:border-color .2s;" style-focus="border-color:#FEBB00;" />
+            <textarea value="{{ form.message }}" onChange="{{ setMessage }}" required="{{ true }}" placeholder="Your Message *" rows="6" style="font-family:'Inter',sans-serif;font-size:15px;padding:15px 16px;border:1.5px solid rgba(0,0,0,0.25);background:#fff;outline:none;resize:vertical;transition:border-color .2s;" style-focus="border-color:#FEBB00;"></textarea>
+            <button type="submit" style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px;letter-spacing:0.5px;background:#000;color:#fff;padding:18px;border:2px solid #000;transition:background .2s,color .2s;" style-hover="background:#FEBB00;border-color:#FEBB00;color:#000;">SEND MESSAGE</button>
+          </form>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+  <dc-import name="Footer" hint-size="100%,420px"></dc-import>
+  <dc-import name="ChatBot" hint-size="64px,64px" style="position:fixed;bottom:24px;right:24px;z-index:999;"></dc-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+class Component extends DCLogic {
+  state = { data: null, w: (typeof window!=='undefined'?window.innerWidth:1440), form: {name:'',email:'',subject:'',message:''}, submitted: false };
+  componentDidMount() {
+    this._onResize = () => this.setState({ w: window.innerWidth });
+    window.addEventListener('resize', this._onResize);
+    import('./data.js').then((m) => { this._dataMod = m; this.setState({ data: m }, () => this._wireAnim()); });
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this._onResize); if (this._io) this._io.disconnect(); }
+  rootRef = (el) => { this._rootEl = el; this._wireAnim(); };
+  _wireAnim() {
+    if (!this._rootEl || !this._dataMod || this._wired) return;
+    this._wired = true;
+    requestAnimationFrame(() => { this._io = this._dataMod.setupReveal(this._rootEl); });
+  }
+  setField = (field) => (e) => this.setState((s) => ({ form: { ...s.form, [field]: e.target.value } }));
+  submit = (e) => { e.preventDefault(); this.setState({ submitted: true }); };
+  renderVals() {
+    const isMobile = this.state.w < 860;
+    return {
+      rootRef: this.rootRef,
+      contactInfo: this.state.data ? this.state.data.contactInfo : [],
+      gridCols: isMobile ? '1fr' : '0.8fr 1.2fr',
+      form: this.state.form, submitted: this.state.submitted, notSubmitted: !this.state.submitted,
+      setName: this.setField('name'), setEmail: this.setField('email'), setSubject: this.setField('subject'), setMessage: this.setField('message'),
+      submit: this.submit,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  @keyframes isdc-fadeup{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes isdc-bounce{0%,80%,100%{transform:translateY(0);opacity:.4;}40%{transform:translateY(-5px);opacity:1;}}
+  @keyframes isdc-pulse{0%,100%{box-shadow:0 8px 24px rgba(0,0,0,0.35),0 0 0 0 rgba(254,187,0,0.5);}50%{box-shadow:0 8px 24px rgba(0,0,0,0.35),0 0 0 8px rgba(254,187,0,0);}}
+</style>
+</helmet>
+<div style="font-family:'Inter',sans-serif;position:relative;width:64px;height:64px;">
+  <sc-if value="{{ showHint }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;bottom:76px;right:0;background:#fff;color:#000;padding:14px 18px;border:1.5px solid #000;max-width:220px;font-size:13.5px;font-weight:600;line-height:1.4;box-shadow:0 8px 20px rgba(0,0,0,0.2);animation:isdc-fadeup .3s ease both;">
+      Need help exploring ISDC?
+      <div onClick="{{ dismissHint }}" style="position:absolute;top:-8px;right:-8px;width:22px;height:22px;background:#000;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;">×</div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;bottom:76px;right:0;width:340px;{{ panelHeight }}background:#000;border:1.5px solid #FEBB00;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,0.4);animation:isdc-fadeup .25s ease both;overflow:hidden;">
+      <div style="background:#000;border-bottom:1px solid rgba(255,255,255,0.15);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;cursor:pointer;" onClick="{{ minimizeChat }}">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:32px;height:32px;background:#FEBB00;color:#000;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;">&gt;_</div>
+          <div>
+            <div style="color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;">ISDC Assistant</div>
+            <div style="display:flex;align-items:center;gap:5px;"><span style="width:6px;height:6px;background:#FEBB00;border-radius:50%;"></span><span style="color:rgba(255,255,255,0.5);font-size:11px;font-family:'IBM Plex Mono',monospace;">online</span></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button onClick="{{ minimizeClick }}" style="width:26px;height:26px;background:transparent;border:1px solid rgba(255,255,255,0.25);color:#fff;cursor:pointer;font-size:13px;">–</button>
+          <button onClick="{{ closeClick }}" style="width:26px;height:26px;background:transparent;border:1px solid rgba(255,255,255,0.25);color:#fff;cursor:pointer;font-size:13px;">×</button>
+        </div>
+      </div>
+
+      <sc-if value="{{ notMinimized }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <div style="flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;max-height:320px;">
+            <sc-for list="{{ messages }}" as="msg" hint-placeholder-count="1">
+              <div style="{{ msg.wrapStyle }}">
+                <div style="{{ msg.bubbleStyle }}">{{ msg.text }}</div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ typing }}" hint-placeholder-val="{{ false }}">
+              <div style="align-self:flex-start;background:rgba(255,255,255,0.08);padding:12px 16px;display:flex;gap:5px;">
+                <span style="width:6px;height:6px;background:#FEBB00;border-radius:50%;animation:isdc-bounce 1s infinite ease-in-out;"></span>
+                <span style="width:6px;height:6px;background:#FEBB00;border-radius:50%;animation:isdc-bounce 1s infinite ease-in-out .15s;"></span>
+                <span style="width:6px;height:6px;background:#FEBB00;border-radius:50%;animation:isdc-bounce 1s infinite ease-in-out .3s;"></span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ showSuggested }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">
+                <sc-for list="{{ suggestedList }}" as="sg" hint-placeholder-count="5">
+                  <button onClick="{{ sg.action }}" style="text-align:left;font-family:'Inter',sans-serif;font-size:12.5px;color:#FEBB00;background:transparent;border:1px solid rgba(254,187,0,0.4);padding:9px 12px;cursor:pointer;transition:background .2s;" style-hover="background:rgba(254,187,0,0.12);">{{ sg.q }}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+          <sc-if value="{{ hasError }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:0 18px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#FEBB00;">{{ errorText }}</div>
+          </sc-if>
+          <div style="display:flex;border-top:1px solid rgba(255,255,255,0.15);flex-shrink:0;">
+            <input value="{{ input }}" onChange="{{ setChatInput }}" onKeyDown="{{ onKeyDown }}" placeholder="Ask something..." style="flex:1;background:#000;border:none;color:#fff;padding:14px 16px;font-size:13.5px;outline:none;font-family:'Inter',sans-serif;" />
+            <button onClick="{{ sendChatFromInput }}" style="background:#FEBB00;color:#000;border:none;padding:0 20px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;cursor:pointer;">→</button>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <button onClick="{{ toggleChat }}" style="width:64px;height:64px;border-radius:50%;background:#FEBB00;border:2px solid #000;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.35);transition:transform .2s;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:18px;color:#000;animation:{{ fabPulse }};" style-hover="transform:scale(1.08);">{{ fabIcon }}</button>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:80,&quot;height&quot;:80}}">
+
+class Component extends DCLogic {
+  state = {
+    open: false, minimized: false, hintShown: false,
+    messages: [{role:'bot', text:"Hey! I'm the ISDC Assistant. Ask me anything about the community."}],
+    input: '', typing: false, error: '', chatQA: [],
+  };
+
+  componentDidMount() {
+    import('./data.js').then((m) => this.setState({ chatQA: m.chatQA }));
+    this._hintTimer = setTimeout(() => { if (!this.state.open) this.setState({ hintShown: true }); }, 3500);
+  }
+  componentWillUnmount() { clearTimeout(this._hintTimer); }
+
+  toggleChat = () => this.setState((s) => ({ open: !s.open, minimized: false, hintShown: false }));
+  minimizeChat = () => this.setState({ minimized: true });
+  closeChat = () => this.setState({ open: false, minimized: false });
+  dismissHint = () => this.setState({ hintShown: false });
+  setChatInput = (e) => this.setState({ input: e.target.value, error: '' });
+  askSuggested = (q) => this._sendChat(q);
+  sendChatFromInput = () => {
+    const text = (this.state.input || '').trim();
+    if (!text) { this.setState({ error: 'Type a message first.' }); return; }
+    this._sendChat(text);
+  };
+  _sendChat(text) {
+    const userMsg = { role: 'user', text };
+    this.setState((s) => ({ messages: [...s.messages, userMsg], input: '', typing: true, error: '' }));
+    const qa = this.state.chatQA || [];
+    const found = qa.find((x) => x.q === text) || qa.find((x) => text.toLowerCase().includes(x.q.toLowerCase().replace('?','').split(' ').slice(0,3).join(' ')));
+    const reply = found ? found.a : "I'm a scripted assistant for now — try one of the suggested questions below, or reach the team directly at isdc@sahyadri.edu.in.";
+    setTimeout(() => {
+      this.setState((s) => ({ messages: [...s.messages, { role: 'bot', text: reply }], typing: false }));
+    }, 1000 + Math.random() * 500);
+  }
+
+  renderVals() {
+    const s = this.state;
+    const messages = s.messages.map((m) => ({
+      text: m.text,
+      wrapStyle: m.role === 'user' ? 'display:flex;justify-content:flex-end;' : 'display:flex;justify-content:flex-start;',
+      bubbleStyle: m.role === 'user'
+        ? "max-width:80%;background:#FEBB00;color:#000;padding:11px 15px;font-size:13.5px;line-height:1.5;"
+        : "max-width:85%;background:rgba(255,255,255,0.08);color:#fff;padding:11px 15px;font-size:13.5px;line-height:1.5;",
+    }));
+    const suggestedList = (s.chatQA || []).map((qa) => ({ q: qa.q, action: () => this.askSuggested(qa.q) }));
+    return {
+      isOpen: s.open, showHint: s.hintShown && !s.open, notMinimized: !s.minimized,
+      panelHeight: s.minimized ? '' : 'height:460px;',
+      messages, typing: s.typing,
+      showSuggested: !s.typing && s.messages.length <= 1,
+      suggestedList, input: s.input, hasError: !!s.error, errorText: s.error,
+      setChatInput: this.setChatInput, sendChatFromInput: this.sendChatFromInput,
+      toggleChat: this.toggleChat, minimizeChat: this.minimizeChat, dismissHint: this.dismissHint,
+      minimizeClick: (e) => { e.stopPropagation(); this.minimizeChat(); },
+      closeClick: (e) => { e.stopPropagation(); this.closeChat(); },
+      onKeyDown: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.sendChatFromInput(); } },
+      fabIcon: s.open ? '×' : '>_',
+      fabPulse: s.open || s.hintShown ? 'none' : 'isdc-pulse 2.4s ease-in-out infinite',
+    };
+  }
+}
+
+</script>
+</body>
+</html>

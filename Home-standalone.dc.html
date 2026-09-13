@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<template id="__bundler_thumbnail" data-bg-color="#000000">
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+<rect width="1200" height="800" fill="#000000"/>
+<text x="600" y="380" font-family="Georgia, serif" font-size="160" font-weight="700" fill="#FEBB00" text-anchor="middle">IS</text>
+<text x="600" y="470" font-family="monospace" font-size="34" letter-spacing="6" fill="#FEBB00" text-anchor="middle">CODE · CONNECT · CREATE</text>
+</svg>
+</template>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#fff;-webkit-font-smoothing:antialiased;}
+  *{box-sizing:border-box;}
+  a{color:#000;text-decoration:none;}
+  a:hover{color:#FEBB00;}
+  @keyframes isdc-fadeup{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes isdc-marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  ::selection{background:#FEBB00;color:#000;}
+</style>
+</helmet>
+
+<div ref="{{ rootRef }}" style="font-family:'Inter',sans-serif;color:#000;background:#fff;overflow-x:hidden;animation:isdc-fadeup .5s ease both;">
+  <dc-import name="Navbar" current="home" hint-size="100%,84px"></dc-import>
+
+  <section style="position:relative;background:#000;color:#fff;padding-top:clamp(48px,8vw,110px);padding-bottom:clamp(60px,10vw,120px);overflow:hidden;">
+    <div style="position:absolute;inset:0;background-image:repeating-linear-gradient(90deg,rgba(255,255,255,0.05) 0px,rgba(255,255,255,0.05) 1px,transparent 1px,transparent 120px),repeating-linear-gradient(0deg,rgba(255,255,255,0.05) 0px,rgba(255,255,255,0.05) 1px,transparent 1px,transparent 120px);pointer-events:none;"></div>
+    <div style="position:absolute;top:8%;right:-6%;width:520px;height:520px;border:2px solid rgba(254,187,0,0.18);border-radius:50%;pointer-events:none;"></div>
+    <div style="position:absolute;top:18%;right:2%;width:320px;height:320px;border:1px solid rgba(255,255,255,0.1);border-radius:50%;pointer-events:none;"></div>
+    <div style="max-width:1360px;margin:0 auto;padding:0 clamp(20px,4vw,48px);position:relative;z-index:1;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:28px;animation:isdc-fadeup .7s ease both;">
+        <span style="width:8px;height:8px;background:#FEBB00;border-radius:50%;display:inline-block;"></span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:3px;color:#FEBB00;">CODE&nbsp;·&nbsp;CONNECT&nbsp;·&nbsp;CREATE</span>
+      </div>
+      <h1 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(44px,8vw,108px);line-height:0.98;letter-spacing:-0.02em;margin:0 0 28px;max-width:1100px;animation:isdc-fadeup .8s ease .1s both;">
+        BUILD REAL THINGS.<br/>WITH REAL <span style="color:#FEBB00;">PEOPLE.</span>
+      </h1>
+      <p style="font-family:'Inter',sans-serif;font-size:clamp(16px,1.6vw,20px);line-height:1.6;color:rgba(255,255,255,0.78);max-width:640px;margin:0 0 44px;animation:isdc-fadeup .8s ease .2s both;">
+        ISDC — the Innovex Student Developer Community — is a student-led tech hub bringing together passionate innovators to build real-world projects, explore emerging technologies, and share knowledge through tech talks, workshops and collaborations.
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;animation:isdc-fadeup .8s ease .3s both;">
+        <a href="Join.dc.html" style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px;letter-spacing:0.5px;background:#FEBB00;color:#000;padding:18px 34px;border:2px solid #FEBB00;transition:transform .15s;" style-hover="transform:translateY(-3px);">JOIN ISDC →</a>
+        <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px;letter-spacing:0.5px;background:transparent;color:#fff;padding:18px 34px;border:2px solid rgba(255,255,255,0.35);transition:border-color .2s,transform .15s;" style-hover="border-color:#FEBB00;color:#FEBB00;transform:translateY(-3px);">EXPLORE PROJECTS</a>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.12);margin-top:clamp(56px,8vw,96px);overflow:hidden;padding:22px 0;position:relative;z-index:1;">
+      <div style="display:flex;gap:60px;white-space:nowrap;animation:isdc-marquee 22s linear infinite;width:max-content;">
+        <sc-for list="{{ marqueeWords }}" as="w" hint-placeholder-count="12">
+          <span style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;color:rgba(255,255,255,0.35);letter-spacing:1px;">{{ w }}</span>
+        </sc-for>
+        <sc-for list="{{ marqueeWords }}" as="w2" hint-placeholder-count="12">
+          <span style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;color:rgba(255,255,255,0.35);letter-spacing:1px;">{{ w2 }}</span>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#fff;padding:clamp(64px,9vw,130px) clamp(20px,4vw,48px);">
+    <div data-reveal="1" style="opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);max-width:1360px;margin:0 auto;display:grid;grid-template-columns:{{ introGridCols }};gap:clamp(32px,6vw,80px);align-items:start;">
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:2px;color:#000;opacity:0.5;margin-bottom:16px;">01 — WHO WE ARE</div>
+        <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(32px,4.2vw,52px);line-height:1.05;margin:0;">A vibrant, student-led tech ecosystem.</h2>
+      </div>
+      <div>
+        <p style="font-size:18px;line-height:1.75;color:#000;margin:0 0 24px;">The ISDC is a vibrant student-led organization dedicated to empowering aspiring developers and technology enthusiasts. We create a collaborative ecosystem where students can learn, build and innovate together — bridging the gap between academic learning and industry requirements.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px;">
+          <div style="border-top:2px solid #000;padding-top:16px;">
+            <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;margin-bottom:6px;">Our Mission</div>
+            <div style="font-size:14.5px;line-height:1.6;color:rgba(0,0,0,0.65);">Hands-on experience, mentorship and networking that turns students into industry-ready developers.</div>
+          </div>
+          <div style="border-top:2px solid #FEBB00;padding-top:16px;">
+            <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;margin-bottom:6px;">Our Vision</div>
+            <div style="font-size:14.5px;line-height:1.6;color:rgba(0,0,0,0.65);">To be the premier student tech community producing industry-ready developers and innovative thinkers.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#000;color:#fff;padding:clamp(64px,9vw,130px) clamp(20px,4vw,48px);">
+    <div style="max-width:1360px;margin:0 auto;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:2px;color:#FEBB00;margin-bottom:16px;">02 — WHY ISDC</div>
+      <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(32px,4.2vw,52px);margin:0 0 48px;max-width:700px;">Everything you need to grow as a developer.</h2>
+      <div style="display:grid;grid-template-columns:{{ whyGridCols }};gap:16px;">
+        <sc-for list="{{ whyCards }}" as="card" hint-placeholder-count="4">
+          <div data-reveal="1" data-reveal-idx="{{ $index }}" style="opacity:0;transform:translateY(28px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);background:#000;border:1px solid rgba(255,255,255,0.14);padding:36px 30px;" style-hover="background:#0d0d0d;transform:translateY(-4px);">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#FEBB00;margin-bottom:22px;">{{ card.num }}</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;margin-bottom:12px;">{{ card.title }}</div>
+            <div style="font-size:14.5px;line-height:1.65;color:rgba(255,255,255,0.65);">{{ card.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#FEBB00;padding:clamp(64px,9vw,120px) clamp(20px,4vw,48px);">
+    <div style="max-width:1360px;margin:0 auto;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:2px;color:#000;opacity:0.6;margin-bottom:16px;">03 — OUR IMPACT</div>
+      <div style="display:grid;grid-template-columns:{{ statsGridCols }};gap:clamp(28px,5vw,40px);">
+        <div>
+          <div data-count="500" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(56px,9vw,110px);line-height:1;color:#000;">0+</div>
+          <div style="font-family:'Inter',sans-serif;font-weight:600;font-size:17px;color:#000;margin-top:8px;">Active Members</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(0,0,0,0.55);margin-top:6px;">PLACEHOLDER FIGURE</div>
+        </div>
+        <div>
+          <div data-count="40" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(56px,9vw,110px);line-height:1;color:#000;">0+</div>
+          <div style="font-family:'Inter',sans-serif;font-weight:600;font-size:17px;color:#000;margin-top:8px;">Events Conducted</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(0,0,0,0.55);margin-top:6px;">PLACEHOLDER FIGURE</div>
+        </div>
+        <div>
+          <div data-count="60" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(56px,9vw,110px);line-height:1;color:#000;">0+</div>
+          <div style="font-family:'Inter',sans-serif;font-weight:600;font-size:17px;color:#000;margin-top:8px;">Projects Completed</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(0,0,0,0.55);margin-top:6px;">PLACEHOLDER FIGURE</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#fff;padding:clamp(64px,9vw,130px) clamp(20px,4vw,48px);">
+    <div style="max-width:1360px;margin:0 auto;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;margin-bottom:44px;">
+        <div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:2px;color:#000;opacity:0.5;margin-bottom:16px;">04 — SELECTED WORK</div>
+          <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(32px,4.2vw,52px);margin:0;">Projects our members shipped.</h2>
+        </div>
+        <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;letter-spacing:0.5px;border-bottom:2px solid #000;padding-bottom:4px;">VIEW ALL PROJECTS →</a>
+      </div>
+      <div style="display:grid;grid-template-columns:{{ projectPreviewCols }};gap:28px;">
+        <sc-for list="{{ featuredProjects }}" as="p" hint-placeholder-count="3">
+          <div data-reveal="1" data-reveal-idx="{{ $index }}" style="opacity:0;transform:translateY(28px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);">
+            <dc-import name="ProjectCard" p="{{ p }}" hint-size="100%,420px" style="width:100%;"></dc-import>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#000;color:#fff;padding:clamp(64px,9vw,130px) clamp(20px,4vw,48px);">
+    <div style="max-width:1360px;margin:0 auto;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;margin-bottom:44px;">
+        <div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:2px;color:#FEBB00;margin-bottom:16px;">05 — WHAT'S NEXT</div>
+          <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(32px,4.2vw,52px);margin:0;">Upcoming events.</h2>
+        </div>
+        <a href="Events.dc.html" style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;letter-spacing:0.5px;color:#fff;border-bottom:2px solid #FEBB00;padding-bottom:4px;">VIEW ALL EVENTS →</a>
+      </div>
+      <div style="display:grid;grid-template-columns:{{ eventPreviewCols }};gap:24px;">
+        <sc-for list="{{ upcomingEventsPreview }}" as="e" hint-placeholder-count="3">
+          <div data-reveal="1" data-reveal-idx="{{ $index }}" style="opacity:0;transform:translateY(28px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);">
+            <dc-import name="EventCard" e="{{ e }}" hint-size="100%,300px" style="width:100%;"></dc-import>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#fff;padding:clamp(64px,9vw,130px) clamp(20px,4vw,48px);">
+    <div style="max-width:1360px;margin:0 auto;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;margin-bottom:44px;">
+        <div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:2px;color:#000;opacity:0.5;margin-bottom:16px;">06 — THE PEOPLE</div>
+          <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(32px,4.2vw,52px);margin:0;">Meet the core team.</h2>
+        </div>
+        <a href="Team.dc.html" style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;letter-spacing:0.5px;border-bottom:2px solid #000;padding-bottom:4px;">MEET EVERYONE →</a>
+      </div>
+      <div style="display:grid;grid-template-columns:{{ teamPreviewCols }};gap:16px;">
+        <sc-for list="{{ teamPreview }}" as="m" hint-placeholder-count="4">
+          <div data-reveal="1" data-reveal-idx="{{ $index }}" style="opacity:0;transform:translateY(28px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);">
+            <dc-import name="TeamCard" m="{{ m }}" hint-size="100%,260px" style="width:100%;"></dc-import>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#FEBB00;padding:clamp(80px,12vw,150px) clamp(20px,4vw,48px);text-align:center;">
+    <div style="max-width:900px;margin:0 auto;">
+      <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(38px,6.5vw,80px);line-height:1.02;margin:0 0 28px;color:#000;">Ready to build something?</h2>
+      <p style="font-size:18px;color:rgba(0,0,0,0.7);margin:0 0 40px;">Join ISDC today and be part of a thriving community of developers, innovators and tech enthusiasts.</p>
+      <a href="Join.dc.html" style="display:inline-block;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:15px;letter-spacing:0.5px;background:#000;color:#fff;padding:20px 44px;border:2px solid #000;transition:transform .15s;" style-hover="transform:translateY(-3px);">JOIN ISDC NOW →</a>
+    </div>
+  </section>
+
+  <dc-import name="Footer" hint-size="100%,420px"></dc-import>
+  <dc-import name="ChatBot" hint-size="64px,64px" style="position:fixed;bottom:24px;right:24px;z-index:999;"></dc-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+class Component extends DCLogic {
+  state = { data: null, w: (typeof window!=='undefined'?window.innerWidth:1440) };
+  componentDidMount() {
+    this._onResize = () => this.setState({ w: window.innerWidth });
+    window.addEventListener('resize', this._onResize);
+    import('./data.js').then((m) => this.setState({ data: m }));
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._onResize);
+    if (this._io) this._io.disconnect();
+    if (this._ioCount) this._ioCount.disconnect();
+  }
+  rootRef = (el) => {
+    this._rootEl = el;
+    if (el && !this._wired) {
+      this._wired = true;
+      import('./data.js').then((m) => {
+        this._io = m.setupReveal(el);
+        this._ioCount = m.setupCounters(el);
+      });
+    }
+  };
+  renderVals() {
+    const d = this.state.data;
+    const isMobile = this.state.w < 860;
+    const isTablet = this.state.w >= 860 && this.state.w < 1160;
+    return {
+      rootRef: this.rootRef,
+      marqueeWords: d ? d.marqueeWords : [],
+      whyCards: d ? d.whyCards : [],
+      featuredProjects: d ? d.projects.slice(0,3) : [],
+      upcomingEventsPreview: d ? d.events.filter(e=>e.status==='upcoming').slice(0,3) : [],
+      teamPreview: d ? d.teamGroups[1].members : [],
+      introGridCols: isMobile ? '1fr' : '0.9fr 1.4fr',
+      whyGridCols: isMobile ? '1fr' : (isTablet ? '1fr 1fr' : 'repeat(4,1fr)'),
+      statsGridCols: isMobile ? '1fr' : 'repeat(3,1fr)',
+      projectPreviewCols: isMobile ? '1fr' : (isTablet ? '1fr 1fr' : 'repeat(3,1fr)'),
+      eventPreviewCols: isMobile ? '1fr' : (isTablet ? '1fr 1fr' : 'repeat(3,1fr)'),
+      teamPreviewCols: isMobile ? '1fr 1fr' : (isTablet ? 'repeat(3,1fr)' : 'repeat(4,1fr)'),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

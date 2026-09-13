@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ISDC — Code. Connect. Create.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000000;
+    --text:#ffffff;
+    --accent:#FEBB00;
+    --muted:#8a8a8a;
+    --line: rgba(255,255,255,0.14);
+  }
+  [data-theme="light"]{
+    --bg:#ffffff;
+    --text:#000000;
+    --muted:#666666;
+    --line: rgba(0,0,0,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+    transition:background .4s ease, color .4s ease;
+  }
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+
+  /* ---------- LOADER ---------- */
+  #loader{
+    position:fixed;inset:0;background:#000;color:#fff;z-index:999;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    transition:opacity .6s ease, visibility .6s ease;
+  }
+  #loader.hide{opacity:0;visibility:hidden;}
+  #loader .pct{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:2px;margin-bottom:14px;color:var(--accent);}
+  #loader .bar{width:220px;height:2px;background:rgba(255,255,255,0.15);position:relative;overflow:hidden;}
+  #loader .bar span{position:absolute;left:0;top:0;height:100%;width:0%;background:var(--accent);}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:22px 32px;
+    background:transparent;
+    transition:background .35s ease, border-color .35s ease;
+    border-bottom:1px solid transparent;
+  }
+  nav.solid{background:var(--bg);border-bottom:1px solid var(--line);}
+  .logo{font-weight:700;font-size:16px;letter-spacing:0.5px;}
+  .logo span{color:var(--accent);}
+  .nav-links{display:flex;gap:28px;list-style:none;}
+  .nav-links a{color:var(--text);text-decoration:none;font-size:13px;position:relative;padding-bottom:4px;opacity:.85;}
+  .nav-links a:hover{opacity:1;}
+  .nav-links a::after{
+    content:'';position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--accent);
+    transition:width .3s ease;
+  }
+  .nav-links a:hover::after{width:100%;}
+  .nav-right{display:flex;align-items:center;gap:18px;}
+  #theme-toggle{
+    background:none;border:1px solid var(--line);color:var(--text);
+    font-family:'JetBrains Mono',monospace;font-size:11px;
+    padding:7px 12px;cursor:pointer;border-radius:100px;
+  }
+  .join-btn{
+    background:var(--accent);color:#000;font-weight:600;font-size:13px;
+    padding:10px 20px;border-radius:100px;text-decoration:none;
+  }
+
+  /* ---------- HERO ---------- */
+  #hero{
+    position:relative;height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;overflow:hidden;
+  }
+  #hero-canvas{position:absolute;inset:0;z-index:0;}
+  .hero-content{position:relative;z-index:2;pointer-events:none;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);
+    letter-spacing:2px;margin-bottom:22px;opacity:0;
+  }
+  #headline{
+    font-size:clamp(40px, 9vw, 130px);
+    font-weight:700;line-height:0.98;letter-spacing:-2px;
+  }
+  #headline .word{display:inline-block;overflow:hidden;vertical-align:top;}
+  #headline .word span{display:inline-block;transform:translateY(110%);}
+  .hero-sub{
+    max-width:520px;margin:26px auto 0;color:var(--muted);font-size:15px;line-height:1.6;opacity:0;
+  }
+  .hero-cta{margin-top:38px;opacity:0;pointer-events:auto;}
+  .hero-cta a{
+    display:inline-block;background:var(--accent);color:#000;font-weight:600;
+    padding:15px 34px;border-radius:100px;text-decoration:none;font-size:14px;
+    transition:transform .25s ease;
+  }
+  .hero-cta a:hover{transform:scale(1.05);}
+  .scroll-cue{
+    position:absolute;bottom:34px;left:50%;transform:translateX(-50%);
+    font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);
+    letter-spacing:2px;z-index:2;
+  }
+
+  /* ---------- MARQUEE ---------- */
+  .marquee-wrap{
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    overflow:hidden;white-space:nowrap;padding:16px 0;position:relative;z-index:2;
+  }
+  .marquee-track{display:inline-flex;animation:scrollLeft 18s linear infinite;}
+  .marquee-wrap:hover .marquee-track{animation-play-state:paused;}
+  .marquee-track span{
+    font-family:'JetBrains Mono',monospace;font-size:14px;padding:0 24px;
+    color:var(--muted);
+  }
+  .marquee-track span.dot{color:var(--accent);}
+  @keyframes scrollLeft{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:120px 6vw;position:relative;}
+  .section-label{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);
+    letter-spacing:2px;margin-bottom:14px;
+  }
+  .section-title{font-size:clamp(28px,4vw,46px);font-weight:600;max-width:700px;margin-bottom:60px;letter-spacing:-1px;}
+
+  /* Bento grid */
+  .bento{
+    display:grid;grid-template-columns:repeat(12,1fr);gap:16px;
+  }
+  .bento .card{
+    border:1px solid var(--line);padding:32px;position:relative;overflow:hidden;
+    cursor:default;
+  }
+  .bento .card::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle 160px at var(--mx,50%) var(--my,50%), rgba(254,187,0,0.12), transparent 70%);
+    opacity:0;transition:opacity .3s ease;pointer-events:none;
+  }
+  .bento .card:hover::before{opacity:1;}
+  .bento .card h3{font-size:22px;margin-bottom:10px;}
+  .bento .card p{color:var(--muted);font-size:14px;line-height:1.6;}
+  .bento .big{grid-column:span 7;grid-row:span 2;display:flex;flex-direction:column;justify-content:flex-end;min-height:340px;}
+  .bento .big h3{font-size:32px;}
+  .bento .small{grid-column:span 5;min-height:160px;}
+  @media(max-width:860px){
+    .bento .big, .bento .small{grid-column:span 12;}
+  }
+  .tag{
+    font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);
+    border:1px solid var(--accent);padding:3px 9px;border-radius:100px;display:inline-block;margin-bottom:16px;
+  }
+
+  /* Stats */
+  .stat-row{
+    display:flex;align-items:baseline;justify-content:space-between;
+    padding:36px 0;border-bottom:1px solid var(--line);gap:24px;flex-wrap:wrap;
+  }
+  .stat-row:first-of-type{border-top:1px solid var(--line);}
+  .stat-num{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:clamp(48px,8vw,110px);color:var(--accent);line-height:1;}
+  .stat-desc{max-width:300px;color:var(--muted);font-size:14px;text-align:right;}
+
+  /* Project feed */
+  .feed-entry{
+    display:flex;gap:40px;align-items:center;padding:36px 0;border-bottom:1px solid var(--line);
+    flex-wrap:wrap;
+  }
+  .feed-entry:nth-child(even){flex-direction:row-reverse;}
+  .feed-thumb{
+    flex:1 1 320px;height:220px;background:linear-gradient(135deg,#1a1a1a,#000);
+    border:1px solid var(--line);position:relative;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .4s ease;
+  }
+  .feed-entry:hover .feed-thumb{transform:scale(1.02);}
+  .feed-thumb::after{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle 140px at var(--mx,50%) var(--my,50%), rgba(254,187,0,0.18), transparent 70%);
+    opacity:0;transition:opacity .3s ease;
+  }
+  .feed-entry:hover .feed-thumb::after{opacity:1;}
+  .feed-thumb-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);}
+  .feed-text{flex:1 1 320px;}
+  .feed-text h3{font-size:26px;margin-bottom:10px;}
+  .feed-text p{color:var(--muted);font-size:14px;margin-bottom:16px;line-height:1.6;}
+  .feed-tags{display:flex;gap:8px;flex-wrap:wrap;}
+  .feed-tags span{
+    font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);
+    border:1px solid var(--line);padding:4px 10px;border-radius:100px;
+  }
+
+  /* CTA */
+  .cta-block{
+    text-align:center;padding:160px 6vw;
+  }
+  .cta-block h2{font-size:clamp(32px,6vw,72px);margin-bottom:36px;letter-spacing:-1px;}
+  .cta-block a{
+    display:inline-block;background:var(--accent);color:#000;font-weight:600;
+    padding:16px 38px;border-radius:100px;text-decoration:none;font-size:15px;
+  }
+
+  footer{
+    padding:60px 6vw 40px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;
+  }
+  footer .mono{color:var(--muted);font-size:12px;}
+  .foot-icons{display:flex;gap:14px;}
+  .foot-icons a{
+    width:36px;height:36px;border:1px solid var(--line);border-radius:100px;
+    display:flex;align-items:center;justify-content:center;color:var(--text);
+    text-decoration:none;font-size:13px;
+  }
+
+  .reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease, transform .8s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="pct mono" id="loaderPct">LOADING 0%</div>
+  <div class="bar"><span id="loaderBar"></span></div>
+</div>
+
+<nav id="nav">
+  <div class="logo">ISDC<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#work">Projects</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button id="theme-toggle" class="mono">DARK</button>
+    <a href="#" class="join-btn">Join Us</a>
+  </div>
+</nav>
+
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-content">
+    <div class="eyebrow mono" id="eyebrow">INNOVEX STUDENT DEVELOPER COMMUNITY</div>
+    <h1 id="headline"></h1>
+    <p class="hero-sub" id="heroSub">A student-led tech hub building real projects, exploring emerging technology, and growing together — one workshop, one hackathon, one idea at a time.</p>
+    <div class="hero-cta" id="heroCta"><a href="#">Join Now</a></div>
+  </div>
+  <div class="scroll-cue mono">SCROLL</div>
+</section>
+
+<div class="marquee-wrap">
+  <div class="marquee-track mono" id="marqueeTrack"></div>
+</div>
+
+<section id="why">
+  <div class="section-label mono reveal">WHY ISDC</div>
+  <h2 class="section-title reveal">Four reasons students stay past their first workshop.</h2>
+  <div class="bento">
+    <div class="card big reveal">
+      <span class="tag">FEATURED</span>
+      <h3>Learn &amp; Grow</h3>
+      <p>Hands-on workshops, structured mentorship, and real projects — not just tutorials. You'll ship things that matter to your portfolio, not just your grade.</p>
+    </div>
+    <div class="card small reveal">
+      <h3>Networking</h3>
+      <p>Connect with alumni and industry professionals already working in the field.</p>
+    </div>
+    <div class="card small reveal">
+      <h3>Innovate</h3>
+      <p>Work on cutting-edge problems with a team, not alone at 2am.</p>
+    </div>
+    <div class="card small reveal" style="grid-column:span 12;">
+      <h3>Opportunities</h3>
+      <p>Internships, hackathons, and competitions sourced directly through the community.</p>
+    </div>
+  </div>
+</section>
+
+<section id="impact">
+  <div class="section-label mono reveal">OUR IMPACT</div>
+  <div class="stat-row reveal">
+    <div class="stat-num" data-target="500">0</div>
+    <div class="stat-desc">Active members building, learning, and shipping together.</div>
+  </div>
+  <div class="stat-row reveal">
+    <div class="stat-num" data-target="40">0</div>
+    <div class="stat-desc">Events conducted — workshops, talks, and competitions.</div>
+  </div>
+  <div class="stat-row reveal">
+    <div class="stat-num" data-target="65">0</div>
+    <div class="stat-desc">Projects completed and shipped by student teams.</div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="section-label mono reveal">SELECTED WORK</div>
+  <h2 class="section-title reveal">A few things the community has shipped.</h2>
+
+  <div class="feed-entry reveal">
+    <div class="feed-thumb"><span class="feed-thumb-label mono">CAMPUS-CONNECT</span></div>
+    <div class="feed-text">
+      <h3>Campus Connect</h3>
+      <p>A real-time event and club discovery platform used across campus, built end-to-end by a 6-person student team.</p>
+      <div class="feed-tags"><span>Next.js</span><span>Postgres</span><span>WebSockets</span></div>
+    </div>
+  </div>
+
+  <div class="feed-entry reveal">
+    <div class="feed-thumb"><span class="feed-thumb-label mono">EDU-BOT</span></div>
+    <div class="feed-text">
+      <h3>EduBot</h3>
+      <p>An AI teaching assistant that answers course-material questions using retrieval-augmented generation.</p>
+      <div class="feed-tags"><span>Python</span><span>LangChain</span><span>Vector DB</span></div>
+    </div>
+  </div>
+
+  <div class="feed-entry reveal">
+    <div class="feed-thumb"><span class="feed-thumb-label mono">GREEN-ROUTE</span></div>
+    <div class="feed-text">
+      <h3>GreenRoute</h3>
+      <p>A carpool-matching app for campus commuters, cutting daily emissions from student travel.</p>
+      <div class="feed-tags"><span>React Native</span><span>Maps API</span><span>Firebase</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-block">
+  <h2 class="reveal">Ready to build<br>something that matters?</h2>
+  <a href="#" class="reveal">Join ISDC Now</a>
+</div>
+
+<footer id="contact">
+  <div>
+    <div class="logo">ISDC<span>.</span></div>
+    <p class="mono" style="margin-top:8px;">Sahyadri College of Engineering &amp; Management, Mangaluru</p>
+  </div>
+  <div class="foot-icons">
+    <a href="#" title="GitHub">GH</a>
+    <a href="#" title="LinkedIn">IN</a>
+    <a href="#" title="Instagram">IG</a>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* ============ LOADER ============ */
+let progress = 0;
+const loaderBar = document.getElementById('loaderBar');
+const loaderPct = document.getElementById('loaderPct');
+const loaderInterval = setInterval(()=>{
+  progress += Math.random()*18;
+  if(progress>=100){
+    progress=100;
+    clearInterval(loaderInterval);
+    loaderBar.style.width='100%';
+    loaderPct.textContent='LOADING 100%';
+    setTimeout(()=>{
+      document.getElementById('loader').classList.add('hide');
+      startHeroAnimation();
+    }, 300);
+  } else {
+    loaderBar.style.width=progress+'%';
+    loaderPct.textContent='LOADING '+Math.floor(progress)+'%';
+  }
+}, 140);
+
+/* ============ NAV SOLID ON SCROLL ============ */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', ()=>{
+  if(window.scrollY > window.innerHeight*0.7){ nav.classList.add('solid'); }
+  else { nav.classList.remove('solid'); }
+});
+
+/* ============ THEME TOGGLE ============ */
+const themeBtn = document.getElementById('theme-toggle');
+themeBtn.addEventListener('click', ()=>{
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  document.documentElement.setAttribute('data-theme', isLight ? 'dark' : 'light');
+  themeBtn.textContent = isLight ? 'DARK' : 'LIGHT';
+});
+
+/* ============ KINETIC HEADLINE ============ */
+const headlineEl = document.getElementById('headline');
+const lines = [["CODE."],["CONNECT."],["CREATE."]];
+lines.forEach((lineWords, li)=>{
+  lineWords.forEach(word=>{
+    const wrap = document.createElement('span');
+    wrap.className='word';
+    const inner = document.createElement('span');
+    inner.textContent = word;
+    wrap.appendChild(inner);
+    headlineEl.appendChild(wrap);
+  });
+  if(li < lines.length-1){ headlineEl.appendChild(document.createElement('br')); }
+});
+
+function startHeroAnimation(){
+  const words = document.querySelectorAll('#headline .word span');
+  gsap.timeline()
+    .to('#eyebrow', {opacity:1, duration:.6})
+    .to(words, {y:'0%', duration:1, ease:'power4.out', stagger:0.12}, '-=0.2')
+    .to('#heroSub', {opacity:1, duration:.8}, '-=0.5')
+    .to('#heroCta', {opacity:1, duration:.8}, '-=0.6');
+}
+
+/* ============ MARQUEE CONTENT ============ */
+const marqueeItems = ['CODE','CONNECT','CREATE'];
+let marqueeHTML = '';
+for(let i=0;i<8;i++){
+  marqueeHTML += marqueeItems.map(w=>`<span>${w}</span><span class="dot">•</span>`).join('');
+}
+document.getElementById('marqueeTrack').innerHTML = marqueeHTML + marqueeHTML;
+
+/* ============ SCROLL REVEALS ============ */
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
+}, {threshold:0.15});
+revealEls.forEach(el=>io.observe(el));
+
+/* ============ STAT COUNTERS ============ */
+const statEls = document.querySelectorAll('.stat-num');
+const statIO = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const el = e.target;
+      const target = parseInt(el.dataset.target,10);
+      let cur = 0;
+      const step = Math.max(1, Math.floor(target/60));
+      const tick = ()=>{
+        cur += step;
+        if(cur >= target){ el.textContent = target + '+'; return; }
+        el.textContent = cur;
+        requestAnimationFrame(tick);
+      };
+      tick();
+      statIO.unobserve(el);
+    }
+  });
+}, {threshold:0.5});
+statEls.forEach(el=>statIO.observe(el));
+
+/* ============ MOUSE-REACTIVE SPOTLIGHT ON CARDS ============ */
+document.querySelectorAll('.bento .card, .feed-thumb').forEach(card=>{
+  card.addEventListener('mousemove', (e)=>{
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty('--mx', (e.clientX-rect.left)+'px');
+    card.style.setProperty('--my', (e.clientY-rect.top)+'px');
+  });
+});
+
+/* ============ WEBGL HERO: WIREFRAME OBJECT + MOUSE DISTORTION SHADER ============ */
+(function(){
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById('hero-canvas');
+  const heroSection = document.getElementById('hero');
+
+  const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 100);
+  camera.position.z = 6;
+
+  /* Background shader plane: GLSL ripple distortion around mouse */
+  const bgGeo = new THREE.PlaneGeometry(30, 20, 1, 1);
+  const bgMat = new THREE.ShaderMaterial({
+    uniforms:{
+      uMouse:{ value: new THREE.Vector2(0.5,0.5) },
+      uTime:{ value: 0 }
+    },
+    transparent:true,
+    vertexShader: `
+      varying vec2 vUv;
+      void main(){
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+      }
+    `,
+    fragmentShader: `
+      varying vec2 vUv;
+      uniform vec2 uMouse;
+      uniform float uTime;
+      void main(){
+        vec2 uv = vUv;
+        float dist = distance(uv, uMouse);
+        float ripple = sin(dist*40.0 - uTime*2.5) * 0.5 + 0.5;
+        float falloff = smoothstep(0.22, 0.0, dist);
+        float grid = 0.0;
+        vec2 g = fract(uv*60.0);
+        if(g.x < 0.03 || g.y < 0.03){ grid = 1.0; }
+        float alpha = grid * falloff * ripple * 0.5;
+        gl_FragColor = vec4(1.0, 0.73, 0.0, alpha);
+      }
+    `
+  });
+  const bgPlane = new THREE.Mesh(bgGeo, bgMat);
+  bgPlane.position.z = -2;
+  scene.add(bgPlane);
+
+  /* Wireframe icosahedron */
+  const geo = new THREE.IcosahedronGeometry(1.7, 1);
+  const edges = new THREE.EdgesGeometry(geo);
+  const mat = new THREE.LineBasicMaterial({color:0xFEBB00, transparent:true, opacity:0.85});
+  const wire = new THREE.LineSegments(edges, mat);
+  scene.add(wire);
+
+  let mouseX=0.5, mouseY=0.5, targetRotX=0, targetRotY=0, idleTimer=0;
+
+  window.addEventListener('mousemove',(e)=>{
+    const rect = heroSection.getBoundingClientRect();
+    mouseX = e.clientX / window.innerWidth;
+    mouseY = 1.0 - (e.clientY / window.innerHeight);
+    targetRotY = (mouseX-0.5) * 1.4;
+    targetRotX = (mouseY-0.5) * 1.4;
+    idleTimer = 0;
+  });
+
+  window.addEventListener('resize', ()=>{
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  const clock = new THREE.Clock();
+  function animate(){
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+    bgMat.uniforms.uTime.value = t;
+    bgMat.uniforms.uMouse.value.set(mouseX, mouseY);
+
+    idleTimer += 0.016;
+    if(idleTimer > 2){
+      wire.rotation.y += 0.003;
+      wire.rotation.x += 0.001;
+    } else {
+      wire.rotation.x += (targetRotX - wire.rotation.x) * 0.04;
+      wire.rotation.y += (targetRotY - wire.rotation.y) * 0.04;
+    }
+    renderer.render(scene, camera);
+  }
+  if(!reduceMotion){ animate(); }
+  else { renderer.render(scene, camera); }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#fff;-webkit-font-smoothing:antialiased;}
+  *{box-sizing:border-box;}
+  a{color:#000;text-decoration:none;}
+  a:hover{color:#FEBB00;}
+  @keyframes isdc-fadeup{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+  ::selection{background:#FEBB00;color:#000;}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="font-family:'Inter',sans-serif;color:#000;background:#fff;overflow-x:hidden;animation:isdc-fadeup .5s ease both;">
+  <dc-import name="Navbar" current="projects" hint-size="100%,84px"></dc-import>
+  <dc-import name="PageHero" eyebrow="PROJECTS" title="Real products, built by real members." sub="From web platforms to internal tools — explore the innovative solutions created by our community." hint-size="100%,340px"></dc-import>
+  <section style="background:#fff;padding:0 clamp(20px,4vw,48px) clamp(80px,10vw,130px);">
+    <div style="max-width:1360px;margin:0 auto;">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin:-20px 0 48px;">
+        <sc-for list="{{ filters }}" as="f" hint-placeholder-count="3">
+          <button onClick="{{ f.action }}" style="{{ f.style }}">{{ f.label }}</button>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:{{ gridCols }};gap:28px;">
+        <sc-for list="{{ filteredProjects }}" as="p" hint-placeholder-count="6">
+          <div data-reveal="1" data-reveal-idx="{{ $index }}" style="opacity:0;transform:translateY(28px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);">
+            <dc-import name="ProjectCard" p="{{ p }}" hint-size="100%,420px" style="width:100%;"></dc-import>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+  <dc-import name="MiniCta" text="Got an idea worth building? Bring it to ISDC." hint-size="100%,220px"></dc-import>
+  <dc-import name="Footer" hint-size="100%,420px"></dc-import>
+  <dc-import name="ChatBot" hint-size="64px,64px" style="position:fixed;bottom:24px;right:24px;z-index:999;"></dc-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+class Component extends DCLogic {
+  state = { data: null, w: (typeof window!=='undefined'?window.innerWidth:1440), filter: 'all' };
+  componentDidMount() {
+    this._onResize = () => this.setState({ w: window.innerWidth });
+    window.addEventListener('resize', this._onResize);
+    import('./data.js').then((m) => { this._dataMod = m; this.setState({ data: m }, () => this._wireAnim()); });
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this._onResize); if (this._io) this._io.disconnect(); }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.filter !== this.state.filter && this._dataMod && this._rootEl) {
+      if (this._io) this._io.disconnect();
+      requestAnimationFrame(() => { this._io = this._dataMod.setupReveal(this._rootEl); });
+    }
+  }
+  rootRef = (el) => { this._rootEl = el; this._wireAnim(); };
+  _wireAnim() {
+    if (!this._rootEl || !this._dataMod || this._wired) return;
+    this._wired = true;
+    requestAnimationFrame(() => { this._io = this._dataMod.setupReveal(this._rootEl); });
+  }
+  setFilter = (f) => this.setState({ filter: f });
+  renderVals() {
+    const d = this.state.data;
+    const projects = d ? d.projects : [];
+    const isMobile = this.state.w < 860;
+    const isTablet = this.state.w >= 860 && this.state.w < 1160;
+    const counts = { all: projects.length, ongoing: projects.filter(p=>p.status==='ongoing').length, completed: projects.filter(p=>p.status==='completed').length };
+    const btnStyle = (active) => `font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600;letter-spacing:0.5px;padding:11px 20px;border:1.5px solid ${active?'#000':'rgba(0,0,0,0.25)'};background:${active?'#000':'transparent'};color:${active?'#FEBB00':'#000'};cursor:pointer;transition:all .2s;`;
+    const filters = [
+      {label:`ALL (${counts.all})`, action:()=>this.setFilter('all'), style:btnStyle(this.state.filter==='all')},
+      {label:`ONGOING (${counts.ongoing})`, action:()=>this.setFilter('ongoing'), style:btnStyle(this.state.filter==='ongoing')},
+      {label:`COMPLETED (${counts.completed})`, action:()=>this.setFilter('completed'), style:btnStyle(this.state.filter==='completed')},
+    ];
+    const filteredProjects = this.state.filter==='all' ? projects : projects.filter(p=>p.status===this.state.filter);
+    return {
+      rootRef: this.rootRef, filters, filteredProjects,
+      gridCols: isMobile ? '1fr' : (isTablet ? '1fr 1fr' : 'repeat(3,1fr)'),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

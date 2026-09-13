@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#fff;-webkit-font-smoothing:antialiased;}
+  *{box-sizing:border-box;}
+  a{color:#000;text-decoration:none;}
+  a:hover{color:#FEBB00;}
+  @keyframes isdc-fadeup{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+  ::selection{background:#FEBB00;color:#000;}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="font-family:'Inter',sans-serif;color:#000;background:#fff;overflow-x:hidden;animation:isdc-fadeup .5s ease both;">
+  <dc-import name="Navbar" current="alumni" hint-size="100%,84px"></dc-import>
+  <dc-import name="PageHero" eyebrow="ALUMNI" title="Where our members go next." sub="Tracking the ISDC members who've graduated into industry, grad school and startups of their own." hint-size="100%,340px"></dc-import>
+  <section style="background:#fff;padding:clamp(40px,6vw,70px) clamp(20px,4vw,48px) clamp(80px,10vw,130px);">
+    <div style="max-width:1000px;margin:0 auto;text-align:center;">
+      <div style="width:64px;height:64px;border:2px solid #000;margin:0 auto 28px;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;">?</div>
+      <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(24px,3vw,34px);margin:0 0 16px;">Alumni directory — coming soon</h3>
+      <p style="font-size:16px;line-height:1.7;color:rgba(0,0,0,0.65);max-width:560px;margin:0 auto 48px;">We're building a proper home for ISDC alumni stories: where they landed, what they're building now, and how current members can reach them for mentorship. Placeholder layout below shows how it will look.</p>
+      <div style="display:grid;grid-template-columns:{{ alumniGridCols }};gap:16px;text-align:left;">
+        <sc-for list="{{ alumniPlaceholders }}" as="a3" hint-placeholder-count="3">
+          <div data-reveal="1" data-reveal-idx="{{ $index }}" style="opacity:0;transform:translateY(28px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);background:#fff;border:1px solid rgba(0,0,0,0.12);padding:28px;">
+            <div style="width:56px;height:56px;border-radius:50%;background:repeating-linear-gradient(135deg,rgba(0,0,0,0.08) 0px,rgba(0,0,0,0.08) 8px,rgba(0,0,0,0.03) 8px,rgba(0,0,0,0.03) 16px);margin-bottom:16px;"></div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;margin-bottom:4px;">{{ a3 }}</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:rgba(0,0,0,0.45);">PLACEHOLDER PROFILE</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+  <dc-import name="Footer" hint-size="100%,420px"></dc-import>
+  <dc-import name="ChatBot" hint-size="64px,64px" style="position:fixed;bottom:24px;right:24px;z-index:999;"></dc-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+class Component extends DCLogic {
+  state = { data: null, w: (typeof window!=='undefined'?window.innerWidth:1440) };
+  componentDidMount() {
+    this._onResize = () => this.setState({ w: window.innerWidth });
+    window.addEventListener('resize', this._onResize);
+    import('./data.js').then((m) => { this._dataMod = m; this.setState({ data: m }, () => this._wireAnim()); });
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this._onResize); if (this._io) this._io.disconnect(); }
+  rootRef = (el) => { this._rootEl = el; this._wireAnim(); };
+  _wireAnim() {
+    if (!this._rootEl || !this._dataMod || this._wired) return;
+    this._wired = true;
+    requestAnimationFrame(() => { this._io = this._dataMod.setupReveal(this._rootEl); });
+  }
+  renderVals() {
+    const isMobile = this.state.w < 860;
+    return { rootRef: this.rootRef, alumniPlaceholders: this.state.data ? this.state.data.alumniPlaceholders : [], alumniGridCols: isMobile ? '1fr' : 'repeat(3,1fr)' };
+  }
+}
+
+</script>
+</body>
+</html>

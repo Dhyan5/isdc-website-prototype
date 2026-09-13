@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<footer style="background:#000;color:#fff;padding:clamp(56px,7vw,90px) clamp(20px,4vw,48px) 32px;">
+  <div style="max-width:1360px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:{{ footerGridCols }};gap:clamp(32px,5vw,60px);padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,0.12);">
+      <div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;margin-bottom:8px;">ISDC</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;color:#FEBB00;margin-bottom:20px;">CODE · CONNECT · CREATE</div>
+        <p style="font-size:14px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:320px;margin:0;">Innovex Student Developer Community — empowering students to code, connect, and create innovative solutions through collaborative learning and real-world projects.</p>
+        <div style="display:flex;gap:14px;margin-top:22px;">
+          <sc-for list="{{ socialLinks }}" as="s" hint-placeholder-count="3">
+            <a href="{{ s.href }}" target="_blank" style="width:38px;height:38px;border:1px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#fff;transition:border-color .2s,color .2s;text-decoration:none;" style-hover="border-color:#FEBB00;color:#FEBB00;">{{ s.short }}</a>
+          </sc-for>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;color:rgba(255,255,255,0.5);margin-bottom:18px;">QUICK LINKS</div>
+        <sc-for list="{{ footerLinks }}" as="fl" hint-placeholder-count="8">
+          <div style="margin-bottom:12px;"><a href="{{ fl.href }}" style="font-size:14.5px;color:rgba(255,255,255,0.8);text-decoration:none;">{{ fl.label }}</a></div>
+        </sc-for>
+      </div>
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;color:rgba(255,255,255,0.5);margin-bottom:18px;">CONTACT</div>
+        <div style="font-size:14.5px;color:rgba(255,255,255,0.8);line-height:1.9;">
+          Sahyadri College of Engineering &amp; Management<br/>Mangaluru, Karnataka<br/>
+          <a href="mailto:isdc@sahyadri.edu.in" style="color:rgba(255,255,255,0.8);">isdc@sahyadri.edu.in</a><br/>
+          <a href="tel:+919342739999" style="color:rgba(255,255,255,0.8);">+91 93427 39999</a>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:24px;">
+      <div style="font-size:12.5px;color:rgba(255,255,255,0.45);">© 2026 ISDC. All rights reserved.</div>
+      <span style="font-size:12.5px;color:rgba(255,255,255,0.45);">Community Guidelines</span>
+    </div>
+  </div>
+</footer>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1360,&quot;height&quot;:420}}">
+
+class Component extends DCLogic {
+  state = { footerLinks: [], socialLinks: [], w: (typeof window!=='undefined'?window.innerWidth:1440) };
+  componentDidMount() {
+    this._onResize = () => this.setState({ w: window.innerWidth });
+    window.addEventListener('resize', this._onResize);
+    import('./data.js').then((m) => this.setState({ footerLinks: m.footerLinks, socialLinks: m.socialLinks }));
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this._onResize); }
+  renderVals() {
+    const isMobile = this.state.w < 860;
+    return {
+      footerLinks: this.state.footerLinks, socialLinks: this.state.socialLinks,
+      footerGridCols: isMobile ? '1fr' : '1.3fr 1fr 1fr',
+    };
+  }
+}
+
+</script>
+</body>
+</html>
