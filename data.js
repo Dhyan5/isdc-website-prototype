@@ -33,7 +33,12 @@ export const teamGroups = [
     {name:'Dr. Rithesh Pakkala P.', role:'Faculty Coordinator', linkedin:'https://www.linkedin.com/in/dr-rithesh-pakkala-permanki-guthu-537b073b/'},
     {name:'Dr. Vasudeva Rao P V', role:'Faculty Coordinator', linkedin:'https://www.linkedin.com/in/vasudeva-rao-p-v-scem/'},
   ]},
-  {title:'Core Leadership', members:[]},
+  {title:'Core Leadership', members:[
+    {name:'Aman A K', role:'President / Community Head', linkedin:'https://www.linkedin.com/in/aman-a-k/'},
+    {name:'Shashwath', role:'Vice President (Operations)', linkedin:'https://www.linkedin.com/in/shashwath-karkera'},
+    {name:'Amruth M S', role:'Vice President (Technical)', linkedin:'https://www.linkedin.com/in/amruth-m-s-74448823a/'},
+    {name:'Vijeth Kumar', role:'General Secretary', linkedin:'https://www.linkedin.com/in/vijeth--kumar/'},
+  ]},
   {title:'Domain Heads', members:[
     {name:'Shruthi', role:'Operations Head', linkedin:'https://www.linkedin.com/in/shruthi-bhat-0636b8292'},
     {name:'Shravya', role:'Project Head', linkedin:'https://www.linkedin.com/in/shravya-shetty-042027294/'},
