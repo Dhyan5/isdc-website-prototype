@@ -30,9 +30,11 @@
 </helmet>
 
 <div ref="{{ rootRef }}" style="font-family:'Inter',sans-serif;color:#000;background:#fff;overflow-x:hidden;animation:isdc-fadeup .5s ease both;">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <dc-import name="Navbar" current="home" hint-size="100%,84px"></dc-import>
 
   <section style="position:relative;background:#000;color:#fff;padding-top:clamp(48px,8vw,110px);padding-bottom:clamp(60px,10vw,120px);overflow:hidden;">
+    <canvas id="hero-canvas" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
     <div style="position:absolute;inset:0;background-image:repeating-linear-gradient(90deg,rgba(255,255,255,0.05) 0px,rgba(255,255,255,0.05) 1px,transparent 1px,transparent 120px),repeating-linear-gradient(0deg,rgba(255,255,255,0.05) 0px,rgba(255,255,255,0.05) 1px,transparent 1px,transparent 120px);pointer-events:none;"></div>
     <div style="position:absolute;top:8%;right:-6%;width:520px;height:520px;border:2px solid rgba(254,187,0,0.18);border-radius:50%;pointer-events:none;"></div>
     <div style="position:absolute;top:18%;right:2%;width:320px;height:320px;border:1px solid rgba(255,255,255,0.1);border-radius:50%;pointer-events:none;"></div>
@@ -92,10 +94,11 @@
       <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(32px,4.2vw,52px);margin:0 0 48px;max-width:700px;">Everything you need to grow as a developer.</h2>
       <div style="display:grid;grid-template-columns:{{ whyGridCols }};gap:16px;">
         <sc-for list="{{ whyCards }}" as="card" hint-placeholder-count="4">
-          <div data-reveal="1" data-reveal-idx="{{ $index }}" style="opacity:0;transform:translateY(28px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);background:#000;border:1px solid rgba(255,255,255,0.14);padding:36px 30px;" style-hover="background:#0d0d0d;transform:translateY(-4px);">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#FEBB00;margin-bottom:22px;">{{ card.num }}</div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;margin-bottom:12px;">{{ card.title }}</div>
-            <div style="font-size:14.5px;line-height:1.65;color:rgba(255,255,255,0.65);">{{ card.desc }}</div>
+          <div onMouseMove="{{ spotMove }}" onMouseLeave="{{ spotLeave }}" data-reveal="1" data-reveal-idx="{{ $index }}" style="position:relative;overflow:hidden;opacity:0;transform:translateY(28px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);background:#000;border:1px solid rgba(255,255,255,0.14);padding:36px 30px;" style-hover="background:#0d0d0d;transform:translateY(-4px);">
+            <div class="__spot" style="position:absolute;inset:0;opacity:0;transition:opacity .3s ease;pointer-events:none;background:radial-gradient(circle 220px at 50% 50%,rgba(254,187,0,0.14),transparent 70%);"></div>
+            <div style="position:relative;z-index:1;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#FEBB00;margin-bottom:22px;">{{ card.num }}</div>
+            <div style="position:relative;z-index:1;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;margin-bottom:12px;">{{ card.title }}</div>
+            <div style="position:relative;z-index:1;font-size:14.5px;line-height:1.65;color:rgba(255,255,255,0.65);">{{ card.desc }}</div>
           </div>
         </sc-for>
       </div>
@@ -203,12 +206,100 @@ class Component extends DCLogic {
     this._onResize = () => this.setState({ w: window.innerWidth });
     window.addEventListener('resize', this._onResize);
     import('./data.js').then((m) => this.setState({ data: m }));
+    this._initHero3D();
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this._onResize);
     if (this._io) this._io.disconnect();
     if (this._ioCount) this._ioCount.disconnect();
+    if (this._heroCleanup) this._heroCleanup();
   }
+  _initHero3D() {
+    const canvas = document.getElementById('hero-canvas');
+    if (!canvas || typeof THREE === 'undefined') return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    camera.position.z = 6;
+    const hero = canvas.closest('section');
+    const bgMaterial = new THREE.ShaderMaterial({
+      uniforms: { uMouse: { value: new THREE.Vector2(0.5, 0.5) }, uTime: { value: 0 } },
+      transparent: true,
+      vertexShader: 'varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
+      fragmentShader: 'varying vec2 vUv; uniform vec2 uMouse; uniform float uTime; void main(){ float dist=distance(vUv,uMouse); float ripple=sin(dist*40.0-uTime*2.5)*0.5+0.5; float falloff=smoothstep(0.22,0.0,dist); vec2 gridUv=fract(vUv*60.0); float grid=step(gridUv.x,0.03)+step(gridUv.y,0.03); float alpha=min(grid,1.0)*falloff*ripple*0.5; gl_FragColor=vec4(1.0,0.73,0.0,alpha); }'
+    });
+    const background = new THREE.Mesh(new THREE.PlaneGeometry(30, 20), bgMaterial);
+    background.position.z = -2;
+    scene.add(background);
+    const geometry = new THREE.IcosahedronGeometry(1.7, 1);
+    const wire = new THREE.LineSegments(new THREE.EdgesGeometry(geometry), new THREE.LineBasicMaterial({ color: 0xFEBB00, transparent: true, opacity: 0.85 }));
+    wire.position.x = 2.2;
+    scene.add(wire);
+    let mouseX = 0.5;
+    let mouseY = 0.5;
+    let targetRotX = 0;
+    let targetRotY = 0;
+    let idleTimer = 0;
+    const resize = () => {
+      const width = canvas.clientWidth || hero.clientWidth;
+      const height = canvas.clientHeight || hero.clientHeight;
+      renderer.setSize(width, height, false);
+      camera.aspect = width / Math.max(height, 1);
+      camera.updateProjectionMatrix();
+    };
+    const move = (event) => {
+      const rect = hero.getBoundingClientRect();
+      mouseX = (event.clientX - rect.left) / Math.max(rect.width, 1);
+      mouseY = 1 - (event.clientY - rect.top) / Math.max(rect.height, 1);
+      targetRotY = (mouseX - 0.5) * 1.4;
+      targetRotX = (mouseY - 0.5) * 1.4;
+      idleTimer = 0;
+    };
+    window.addEventListener('resize', resize);
+    hero.addEventListener('mousemove', move);
+    resize();
+    const clock = new THREE.Clock();
+    let raf;
+    const animate = () => {
+      raf = requestAnimationFrame(animate);
+      bgMaterial.uniforms.uTime.value = clock.getElapsedTime();
+      bgMaterial.uniforms.uMouse.value.set(mouseX, mouseY);
+      idleTimer += 0.016;
+      if (idleTimer > 2) {
+        wire.rotation.y += 0.003;
+        wire.rotation.x += 0.001;
+      } else {
+        wire.rotation.x += (targetRotX - wire.rotation.x) * 0.04;
+        wire.rotation.y += (targetRotY - wire.rotation.y) * 0.04;
+      }
+      renderer.render(scene, camera);
+    };
+    if (reduceMotion) renderer.render(scene, camera); else animate();
+    this._heroCleanup = () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', resize);
+      hero.removeEventListener('mousemove', move);
+      geometry.dispose();
+      background.geometry.dispose();
+      bgMaterial.dispose();
+      wire.material.dispose();
+      renderer.dispose();
+    };
+  }
+  spotMove = (event) => {
+    const card = event.currentTarget;
+    const glow = card.querySelector('.__spot');
+    if (!glow) return;
+    const rect = card.getBoundingClientRect();
+    glow.style.background = `radial-gradient(circle 220px at ${event.clientX - rect.left}px ${event.clientY - rect.top}px,rgba(254,187,0,0.14),transparent 70%)`;
+    glow.style.opacity = '1';
+  };
+  spotLeave = (event) => {
+    const glow = event.currentTarget.querySelector('.__spot');
+    if (glow) glow.style.opacity = '0';
+  };
   rootRef = (el) => {
     this._rootEl = el;
     if (el && !this._wired) {
@@ -227,6 +318,7 @@ class Component extends DCLogic {
       rootRef: this.rootRef,
       marqueeWords: d ? d.marqueeWords : [],
       whyCards: d ? d.whyCards : [],
+      spotMove: this.spotMove, spotLeave: this.spotLeave,
       featuredProjects: d ? d.projects.slice(0,3) : [],
       upcomingEventsPreview: d ? d.events.filter(e=>e.status==='upcoming').slice(0,3) : [],
       teamPreview: d ? d.teamGroups[1].members : [],
